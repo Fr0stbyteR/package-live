@@ -29,7 +29,7 @@ export interface LiveMeterInternalState {
     levels: number[];
 }
 
-export default class LiveMeter extends BaseObject<{}, LiveMeterInternalState, [], [number[]], [], LiveMeterProps, LiveMeterUIState> {
+export default class LiveMeter extends BaseObject<{}, {}, [], [number[]], [], LiveMeterProps, LiveMeterUIState> {
     static package = LiveObject.package;
     static author = LiveObject.author;
     static version = LiveObject.version;
@@ -159,7 +159,7 @@ export default class LiveMeter extends BaseObject<{}, LiveMeterInternalState, []
                     const result = mode === "deciBel" ? absMax.map(v => MathUtils.atodb(v)) : absMax;
                     if (!lastResult.every((v, i) => v === result[i] || Math.abs(v - result[i]) < thresh) || lastResult.length !== result.length) {
                         this.outlet(0, result);
-                        this.setState({ levels: result });
+                        this._.levels = result;
                         this.updateUI({ levels: result });
                         lastResult = result;
                     }

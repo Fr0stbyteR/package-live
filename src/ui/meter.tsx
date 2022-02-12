@@ -11,7 +11,7 @@ export interface LiveMeterUIState extends Omit<LiveMeterProps, "thresholdLinear"
 export default class LiveMeterUI extends CanvasUI<LiveMeter, {}, LiveMeterUIState> {
     state: LiveMeterUIState & BaseUIState = {
         ...this.state,
-        levels: this.object.state.levels
+        levels: this.object._.levels
     };
     levels: number[] = [];
     maxValues: number[] = [];

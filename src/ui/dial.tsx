@@ -59,12 +59,12 @@ export default class LiveDialUI extends LiveObjectUI<LiveDial, LiveDialUIState> 
         let dialHeight: number;
 
         if (appearance === "tiny") {
-            dialHeight = 18;
+            dialHeight = Math.min(width, height) / 3;
             start = -3 * Math.PI * 0.5;
             end = 0;
             valPos = start + MathUtils.toRad(this.distance * 270);
         } else {
-            dialHeight = 25;
+            dialHeight = Math.min(width, height) / 2;
             start = Math.PI - 3 * Math.PI / 8;
             end = 2 * Math.PI + 3 * Math.PI / 8;
             valPos = start + MathUtils.toRad(this.distance * 315);
