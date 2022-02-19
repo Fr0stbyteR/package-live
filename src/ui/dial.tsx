@@ -36,6 +36,8 @@ export default class LiveDialUI extends LiveObjectUI<LiveDial, LiveDialUIState> 
             needleColor,
             activeDialColor,
             dialColor,
+            activeFgDialColor,
+            fgDialColor,
             textColor,
             triBorderColor,
             triColor,
@@ -105,7 +107,7 @@ export default class LiveDialUI extends LiveObjectUI<LiveDial, LiveDialUIState> 
             Utils.fillRoundedRect(ctx, 1.2, 1.2, width - 2.4, 30 - 0.4, [5, 5, 0, 0]);
         }
 
-        ctx.strokeStyle = active ? activeNeedleColor : needleColor;
+        ctx.strokeStyle = active ? activeFgDialColor : fgDialColor;
         ctx.fillStyle = ctx.strokeStyle;
         ctx.lineWidth = lineWidth;
         // draw background arc endcaps

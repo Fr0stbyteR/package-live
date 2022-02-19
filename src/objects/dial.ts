@@ -8,6 +8,8 @@ export interface LiveDialProps extends LiveObjectProps {
     focusBorderColor: string;
     dialColor: string;
     activeDialColor: string;
+    fgDialColor: string;
+    activeFgDialColor: string;
     needleColor: string;
     activeNeedleColor: string;
     panelColor: string;
@@ -81,6 +83,18 @@ export default class LiveDial extends LiveObject<{}, {}, [number | Bang, number]
             type: "color",
             default: "rgba(109, 215, 255, 1)",
             description: "Dial color (active)",
+            isUIState: true
+        },
+        fgDialColor: {
+            type: "color",
+            default: "rgba(105, 105, 105, 1)",
+            description: "Forground dial color (inactive)",
+            isUIState: true
+        },
+        activeFgDialColor: {
+            type: "color",
+            default: "rgba(195, 195, 195, 1)",
+            description: "Forground dial color (active)",
             isUIState: true
         },
         needleColor: {
@@ -161,7 +175,7 @@ export default class LiveDial extends LiveObject<{}, {}, [number | Bang, number]
         triangle: {
             type: "boolean",
             default: false,
-            description: "Display yriangle",
+            description: "Display triangle",
             isUIState: true
         }
     };
