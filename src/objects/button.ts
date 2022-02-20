@@ -95,30 +95,33 @@ export default class LiveButton extends LiveObject<{}, {}, [any], [Bang, number]
         }
     };
     static UI = LiveButtonUI;
-    handleUpdateArgs = (args: [number?]) => {
-        this.validateValue(+!!args[0]);
-        this.updateUI({ value: this.state.value });
-    };
     subscribe() {
         super.subscribe();
+        const validateAndUpdateUI = (value = 0) => {
+            this.validateValue(value);
+            this.updateUI({ value: this.state.value });
+        }
+        const handleUpdateArgs = (args: [number?]) => {
+            if (typeof args[0] === "number") {
+                validateAndUpdateUI(+!!args[0]);
+            }
+        };
         this.on("preInit", () => {
             this.inlets = 1;
             this.outlets = 2;
-            this.handleUpdateArgs(this.args);
+            validateAndUpdateUI(+!!this.args[0]);
         });
-        this.on("updateArgs", this.handleUpdateArgs);
+        this.on("updateArgs", handleUpdateArgs);
         this.on("inlet", ({ data, inlet }) => {
             if (inlet === 0) {
-                this.validateValue(+!!data);
-                this.updateUI({ value: this.state.value });
+                validateAndUpdateUI(+!!data);
                 this.outlet(1, this.state.value);
                 if (this.state.value && this.getProp("transition") !== "One->Zero") this.outlet(0, new Bang());
             }
         });
         this.on("changeFromUI", ({ value }) => {
             const lastValue = this.state.value;
-            this.validateValue(value);
-            this.updateUI({ value: this.state.value });
+            validateAndUpdateUI(value);
             this.outlet(1, value);
             const transition = this.getProp("transition");
             const b01 = transition !== "One->Zero";

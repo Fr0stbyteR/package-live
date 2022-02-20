@@ -1,4 +1,3 @@
-
 import type { IArgsMeta, IInletsMeta, IOutletsMeta, IPropsMeta } from "@jspatcher/jspatcher/src/core/objects/base/AbstractObject";
 import { Bang, isBang } from "../sdk";
 import LiveNumboxUI, { LiveNumboxUIState } from "../ui/numbox";
@@ -134,32 +133,31 @@ export default class LiveNumbox extends LiveObject<{}, {}, [number | Bang, numbe
         }
     };
     static UI = LiveNumboxUI;
-    handleUpdateArgs = (args: [number?]) => {
-        if (typeof args[0] === "number") {
-            this.validateValue(args[0]);
-            this.updateUI({ value: this.state.value });
-        }
-    };
     subscribe() {
         super.subscribe();
+        const validateAndUpdateUI = (value = 0) => {
+            this.validateValue(value);
+            this.updateUI({ value: this.state.value });
+        }
+        const handleUpdateArgs = (args: [number?]) => {
+            if (typeof args[0] === "number") {
+                validateAndUpdateUI(args[0]);
+            }
+        };
         this.on("preInit", () => {
             this.inlets = 2;
             this.outlets = 2;
-            this.handleUpdateArgs(this.args);
+            validateAndUpdateUI(this.args[0] || 0);
         });
-        this.on("updateArgs", this.handleUpdateArgs);
+        this.on("updateArgs", handleUpdateArgs);
         this.on("inlet", ({ data, inlet }) => {
             if (inlet === 0) {
                 if (!isBang(data)) {
-                    const value = +data;
-                    this.validateValue(value);
-                    this.updateUI({ value: this.state.value });
+                    validateAndUpdateUI(+data);
                 }
                 this.outletAll([this.state.value, this._.displayValue]);
             } else if (inlet === 1) {
-                const value = +data;
-                this.validateValue(value);
-                this.updateUI({ value: this.state.value });
+                validateAndUpdateUI(+data);
             }
         });
         this.on("changeFromUI", ({ value }) => {

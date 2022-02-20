@@ -255,16 +255,19 @@ export default class LiveGain extends LiveObject<{}, {}, [number | Bang, number]
     };
     inletAudioConnections = [{ node: this._.bypassNode, index: 0 }];
     outletAudioConnections = [{ node: this._.gainNode, index: 0 }];
-    handleUpdateArgs = (args: number[]) => {
-        if (typeof args[0] === "number") {
-            this.validateValue(args[0]);
-            this.updateUI({ value: this.state.value });
-            const paramValue = this.state.value === this.getProp("min") ? 0 : this.getProp("mode") === "deciBel" ? MathUtils.dbtoa(this.state.value) : this.state.value;
-            this.applyBPF(this._.gainNode.gain, [[paramValue, this.getProp("interp")]]);
-        }
-    };
     subscribe() {
         super.subscribe();
+        const validateAndUpdateUI = (value = 0) => {
+            this.validateValue(value);
+            const paramValue = this.state.value === this.getProp("min") ? 0 : this.getProp("mode") === "deciBel" ? MathUtils.dbtoa(this.state.value) : this.state.value;
+            this.applyBPF(this._.gainNode.gain, [[paramValue, this.getProp("interp")]]);
+            this.updateUI({ value: this.state.value });
+        }
+        const handleUpdateArgs = (args: number[]) => {
+            if (typeof args[0] === "number") {
+                validateAndUpdateUI(args[0]);
+            }
+        };
         const startRequest = () => {
             let lastResult: number[] = [];
             const request = async () => {
@@ -291,7 +294,7 @@ export default class LiveGain extends LiveObject<{}, {}, [number | Bang, number]
             this.inlets = 1;
             this.outlets = 4;
         });
-        this.on("updateArgs", this.handleUpdateArgs);
+        this.on("updateArgs", handleUpdateArgs);
         let lastMetering: "preFader" | "postFader";
         let lastMode: "deciBel" | "linear";
         this.on("updateProps", async (props) => {
@@ -315,15 +318,12 @@ export default class LiveGain extends LiveObject<{}, {}, [number | Bang, number]
                     value = MathUtils.atodb(this.state.value);
                     await this.updateProps({ min: -70, max: 6, unitStyle: "decibel" });
                 }
-                this.validateValue(value);
-                this.updateUI({ value: this.state.value });
-                const paramValue = this.state.value === this.getProp("min") ? 0 : this.getProp("mode") === "deciBel" ? MathUtils.dbtoa(this.state.value) : this.state.value;
-                this.applyBPF(this._.gainNode.gain, [[paramValue, this.getProp("interp")]]);
+                validateAndUpdateUI(value);
             }
         });
         this.on("postInit", async () => {
             lastMode = this.getProp("mode");
-            this.handleUpdateArgs(this.args);
+            validateAndUpdateUI(this.args[0] || 0);
             this._.bypassNode.connect(this._.gainNode);
             await TemporalAnalyserNode.register(this.audioCtx.audioWorklet);
             this._.analyserNode = new TemporalAnalyserNode(this.audioCtx);
@@ -335,10 +335,7 @@ export default class LiveGain extends LiveObject<{}, {}, [number | Bang, number]
         this.on("inlet", ({ data, inlet }) => {
             if (inlet === 0) {
                 if (!isBang(data)) {
-                    this.validateValue(+data);
-                    const paramValue = this.state.value === this.getProp("min") ? 0 : this.getProp("mode") === "deciBel" ? MathUtils.dbtoa(this.state.value) : this.state.value;
-                    this.applyBPF(this._.gainNode.gain, [[paramValue, this.getProp("interp")]]);
-                    this.updateUI({ value: this.state.value });
+                    validateAndUpdateUI(+data);
                 }
                 this.outletAll([, this.state.value, this._.displayValue]);
             }

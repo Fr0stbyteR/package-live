@@ -144,10 +144,6 @@ export default class LiveObject<
     onChangeFromUI(e: { value: number; displayValue: string }) {
         this.emit("changeFromUI", e);
     }
-    handleUpdateArgs = (args: Partial<A>) => {
-        this.validateValue(+args[0] || 0);
-        this.updateUI({ value: this.state.value } as Partial<U & LiveObjectUIState & BaseUIState>);
-    };
     subscribe() {
         super.subscribe();
         this.on("updateProps", (props) => {
