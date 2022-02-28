@@ -1,5 +1,4 @@
 import type { IPropsMeta } from "@jspatcher/jspatcher/src/core/objects/base/AbstractObject";
-import type { BaseUIState } from "@jspatcher/jspatcher/src/core/objects/base/BaseUI";
 import { author, name, version, description } from "../index";
 import { BaseObject } from "../sdk";
 import LiveObjectUI, { getDisplayValue, LiveObjectUIState } from "../ui/base";
@@ -153,8 +152,5 @@ export default class LiveObject<
                 if (lastValue !== this.state.value) this.updateUI({ value: this.state.value } as any);
             }
         });
-        this.on("updateState", ({ value }: Partial<S>) => {
-            this.validateValue(value);
-        })
     }
 }

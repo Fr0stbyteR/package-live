@@ -128,5 +128,10 @@ export default class LiveButton extends LiveObject<{}, {}, [any], [Bang, number]
             const b10 = transition !== "Zero->One";
             if ((b01 && lastValue < this.state.value) || (b10 && lastValue > this.state.value)) this.outlet(0, new Bang());
         });
+        this.on("updateState", ({ value }) => {
+            validateAndUpdateUI(value);
+            this.outlet(1, this.state.value);
+            if (this.state.value && this.getProp("transition") !== "One->Zero") this.outlet(0, new Bang());
+        });
     }
 }

@@ -191,5 +191,9 @@ export default class LiveTab extends LiveObject<{}, {}, [number | Bang, number],
             this.validateValue(value);
             this.outletAll([this.state.value, this._.displayValue]);
         });
+        this.on("updateState", ({ value }) => {
+            validateAndUpdateUI(value);
+            this.outletAll([this.state.value, this._.displayValue]);
+        });
     }
 }

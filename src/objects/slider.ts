@@ -163,5 +163,9 @@ export default class LiveSlider extends LiveObject<{}, {}, [number | Bang, numbe
             this.validateValue(value);
             this.outletAll([this.state.value, this._.displayValue]);
         });
+        this.on("updateState", ({ value }) => {
+            validateAndUpdateUI(value);
+            this.outletAll([this.state.value, this._.displayValue]);
+        });
     }
 }

@@ -352,5 +352,9 @@ export default class LiveGain extends LiveObject<{}, {}, [number | Bang, number]
             window.clearTimeout(this._.$requestTimer);
             if (this._.analyserNode) await this._.analyserNode.destroy();
         });
+        this.on("updateState", ({ value }) => {
+            validateAndUpdateUI(value);
+            this.outletAll([, this.state.value, this._.displayValue]);
+        });
     }
 }
