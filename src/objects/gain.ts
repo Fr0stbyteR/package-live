@@ -257,8 +257,8 @@ export default class LiveGain extends LiveObject<{}, {}, [number | Bang, number]
     outletAudioConnections = [{ node: this._.gainNode, index: 0 }];
     subscribe() {
         super.subscribe();
-        const validateAndUpdateUI = (value = 0) => {
-            this.validateValue(value);
+        const validateAndUpdateUI = (value = 0, id?: string) => {
+            this.validateValue(value, id);
             const paramValue = this.state.value === this.getProp("min") ? 0 : this.getProp("mode") === "deciBel" ? MathUtils.dbtoa(this.state.value) : this.state.value;
             this.applyBPF(this._.gainNode.gain, [[paramValue, this.getProp("interp")]]);
             this.updateUI({ value: this.state.value });
@@ -352,8 +352,8 @@ export default class LiveGain extends LiveObject<{}, {}, [number | Bang, number]
             window.clearTimeout(this._.$requestTimer);
             if (this._.analyserNode) await this._.analyserNode.destroy();
         });
-        this.on("updateState", ({ value }) => {
-            validateAndUpdateUI(value);
+        this.on("updateState", ({ state: { value }, id }) => {
+            validateAndUpdateUI(value, id);
             this.outletAll([, this.state.value, this._.displayValue]);
         });
     }

@@ -19,7 +19,7 @@
   "license": "GPL-3.0-or-later",
   "repository": "https://github.com/jspatcher/package-live",
   "devDependencies": {
-    "@jspatcher/jspatcher": "^0.0.9",
+    "@jspatcher/jspatcher": "^0.0.10",
     "@types/react": "^17.0.19",
     "clean-webpack-plugin": "^4.0.0-alpha.0",
     "esbuild-loader": "^2.15.1",

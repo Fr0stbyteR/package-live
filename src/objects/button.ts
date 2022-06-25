@@ -97,8 +97,8 @@ export default class LiveButton extends LiveObject<{}, {}, [any], [Bang, number]
     static UI = LiveButtonUI;
     subscribe() {
         super.subscribe();
-        const validateAndUpdateUI = (value = 0) => {
-            this.validateValue(value);
+        const validateAndUpdateUI = (value = 0, id?: string) => {
+            this.validateValue(value, id);
             this.updateUI({ value: this.state.value });
         }
         const handleUpdateArgs = (args: [number?]) => {
@@ -128,8 +128,8 @@ export default class LiveButton extends LiveObject<{}, {}, [any], [Bang, number]
             const b10 = transition !== "Zero->One";
             if ((b01 && lastValue < this.state.value) || (b10 && lastValue > this.state.value)) this.outlet(0, new Bang());
         });
-        this.on("updateState", ({ value }) => {
-            validateAndUpdateUI(value);
+        this.on("updateState", ({ state: { value }, id }) => {
+            validateAndUpdateUI(value, id);
             this.outlet(1, this.state.value);
             if (this.state.value && this.getProp("transition") !== "One->Zero") this.outlet(0, new Bang());
         });

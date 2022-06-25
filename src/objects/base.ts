@@ -134,10 +134,10 @@ export default class LiveObject<
         const { type, unitStyle, units, enums } = this.props;
         return getDisplayValue(value, type, unitStyle, units, enums);
     }
-    validateValue(valueIn: number) {
+    validateValue(valueIn: number, id?: string) {
         const value = this.toValidValue(valueIn || 0);
         if (value === this.state.value) return;
-        this.setState({ value } as S & LiveObjectState);
+        this.setState({ value } as S & LiveObjectState, id);
         this._.displayValue = this.toDisplayValue(this.state.value);
     }
     onChangeFromUI(e: { value: number; displayValue: string }) {

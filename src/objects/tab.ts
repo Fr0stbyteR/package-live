@@ -162,8 +162,8 @@ export default class LiveTab extends LiveObject<{}, {}, [number | Bang, number],
     static UI = LiveTabUI;
     subscribe() {
         super.subscribe();
-        const validateAndUpdateUI = (value = 0) => {
-            this.validateValue(value);
+        const validateAndUpdateUI = (value = 0, id?: string) => {
+            this.validateValue(value, id);
             this.updateUI({ value: this.state.value });
         }
         const handleUpdateArgs = (args: [number?]) => {
@@ -191,8 +191,8 @@ export default class LiveTab extends LiveObject<{}, {}, [number | Bang, number],
             this.validateValue(value);
             this.outletAll([this.state.value, this._.displayValue]);
         });
-        this.on("updateState", ({ value }) => {
-            validateAndUpdateUI(value);
+        this.on("updateState", ({ state: { value }, id }) => {
+            validateAndUpdateUI(value, id);
             this.outletAll([this.state.value, this._.displayValue]);
         });
     }
